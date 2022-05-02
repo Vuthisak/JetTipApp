@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Slider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -38,7 +39,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyApp {
-                // TopHeader()
                 MainContent()
             }
         }
@@ -60,6 +60,7 @@ fun TopHeader(totalPerPerson: Double = 0.0) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(15.dp)
             .height(150.dp)
             .clip(shape = CircleShape.copy(all = CornerSize(12.dp))),
         color = Color(0xFFE9D7F7)
@@ -88,8 +89,12 @@ fun TopHeader(totalPerPerson: Double = 0.0) {
 @ExperimentalComposeUiApi
 @Composable
 fun MainContent() {
-    BillForm() {
+    Column {
+        BillForm(
+            modifier = Modifier.padding(8.dp)
+        ) {
 
+        }
     }
 }
 
@@ -106,6 +111,10 @@ fun BillForm(
         totalBillState.value.trim().isNotEmpty()
     }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val sliderPositionState = remember {
+        mutableStateOf(0f)
+    }
+    TopHeader()
     Surface(
         modifier = modifier
             .padding(2.dp)
@@ -129,37 +138,84 @@ fun BillForm(
                     keyboardController?.hide()
                 }
             )
-            if (validState) {
-                Row(
-                    modifier = Modifier.padding(3.dp),
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Text(
-                        text = "Split", modifier = Modifier.align(
-                            alignment = Alignment.CenterVertically
-                        )
+//            if (validState) {
+            Row(
+                modifier = Modifier.padding(3.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = "Split", modifier = Modifier.align(
+                        alignment = Alignment.CenterVertically
                     )
-                    Spacer(modifier = modifier.width(120.dp))
-                    Row(
-                        modifier = Modifier.padding(horizontal = 3.dp),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        RoundIconButton(
-                            imageVector = Icons.Default.Remove,
-                            onClick = {
+                )
+                Spacer(modifier = modifier.width(120.dp))
+                Row(
+                    modifier = Modifier.padding(horizontal = 3.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    RoundIconButton(
+                        imageVector = Icons.Default.Remove,
+                        onClick = {
 
-                            })
-                        RoundIconButton(
-                            imageVector = Icons.Default.Add,
-                            onClick = {
+                        })
+                    Text(
+                        text = "2",
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(horizontal = 9.dp)
+                    )
+                    RoundIconButton(
+                        imageVector = Icons.Default.Add,
+                        onClick = {
 
-                            })
+                        })
+                }
+            }
+//            } else {
+//                Box() {
+//
+//                }
+//            }
+
+            //Tip Row
+            Row(
+                modifier = Modifier
+                    .padding(
+                        horizontal = 3.dp,
+                        vertical = 12.dp
+                    )
+            ) {
+                Text(
+                    text = "Tip",
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                )
+                Spacer(modifier = Modifier.width(200.dp))
+                Text(
+                    text = "$33.00",
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                )
+            }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "33%")
+                Spacer(modifier = Modifier.height(14.dp))
+                //Slider
+                Slider(
+                    value = sliderPositionState.value,
+                    onValueChange = { newVal ->
+                        sliderPositionState.value = newVal
+                    },
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
+                    steps = 5,
+                    onValueChangeFinished = {
+
                     }
-                }
-            } else {
-                Box() {
-
-                }
+                )
             }
         }
     }
