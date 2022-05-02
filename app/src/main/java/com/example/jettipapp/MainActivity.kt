@@ -12,6 +12,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jettipapp.components.InputField
 import com.example.jettipapp.ui.theme.JetTipAppTheme
+import com.example.jettipapp.widgets.RoundIconButton
 
 @ExperimentalComposeUiApi
 class MainActivity : ComponentActivity() {
@@ -109,7 +113,11 @@ fun BillForm(
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
         border = BorderStroke(width = 2.dp, color = Color.LightGray)
     ) {
-        Column() {
+        Column(
+            modifier = Modifier.padding(6.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
             InputField(
                 valueState = totalBillState,
                 labelId = "Enter Bill",
@@ -132,6 +140,21 @@ fun BillForm(
                         )
                     )
                     Spacer(modifier = modifier.width(120.dp))
+                    Row(
+                        modifier = Modifier.padding(horizontal = 3.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        RoundIconButton(
+                            imageVector = Icons.Default.Remove,
+                            onClick = {
+
+                            })
+                        RoundIconButton(
+                            imageVector = Icons.Default.Add,
+                            onClick = {
+
+                            })
+                    }
                 }
             } else {
                 Box() {
