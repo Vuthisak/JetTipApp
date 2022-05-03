@@ -114,6 +114,18 @@ fun BillForm(
     val sliderPositionState = remember {
         mutableStateOf(0f)
     }
+    val tipPercentage = (sliderPositionState.value * 100).toInt()
+    val splitByState = remember {
+        mutableStateOf(1)
+    }
+    val range = IntRange(start = 1, endInclusive = 100)
+    val tipAmountState = remember {
+        mutableStateOf(0.0)
+    }
+    val totalPerPersonState = remember {
+        mutableStateOf(0.0)
+    }
+
     TopHeader()
     Surface(
         modifier = modifier
@@ -156,10 +168,15 @@ fun BillForm(
                     RoundIconButton(
                         imageVector = Icons.Default.Remove,
                         onClick = {
-
+                            splitByState.value =
+                                if (splitByState.value > 1) {
+                                    splitByState.value - 1
+                                } else {
+                                    1
+                                }
                         })
                     Text(
-                        text = "2",
+                        text = "${splitByState.value}",
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(horizontal = 9.dp)
@@ -167,7 +184,9 @@ fun BillForm(
                     RoundIconButton(
                         imageVector = Icons.Default.Add,
                         onClick = {
-
+                            if (splitByState.value < range.last) {
+                                splitByState.value += 1
+                            }
                         })
                 }
             }
@@ -191,7 +210,7 @@ fun BillForm(
                 )
                 Spacer(modifier = Modifier.width(200.dp))
                 Text(
-                    text = "$33.00",
+                    text = "$ ${tipAmountState.value}",
                     modifier = Modifier.align(alignment = Alignment.CenterVertically)
                 )
             }
@@ -199,13 +218,24 @@ fun BillForm(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "33%")
+                Text(text = "$tipPercentage %")
                 Spacer(modifier = Modifier.height(14.dp))
                 //Slider
                 Slider(
                     value = sliderPositionState.value,
                     onValueChange = { newVal ->
                         sliderPositionState.value = newVal
+                        tipAmountState.value =
+                            calculateTotalTip(
+                                totalBill = totalBillState.value.toDouble(),
+                                tipPercentage = tipPercentage
+                            )
+                        totalPerPersonState.value =
+                            calculateTotalPerPerson(
+                                totalBill = totalBillState.value.toDouble(),
+                                splitBy = splitByState.value,
+                                tipPercentage = tipPercentage
+                            )
                     },
                     modifier = Modifier.padding(
                         start = 16.dp,
